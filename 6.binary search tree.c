@@ -1,68 +1,73 @@
-#include<stdio.h>
-#include<stdlib.h>
-struct node
-{
-	int data;
-	struct node* left;
-	struct node* right;
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure for a node in the BST
+struct Node {
+    int data;
+    struct Node* left;
+    struct Node* right;
 };
-void inorder(struct node* root)
-{
-    if(root==NULL)return;
-    inorder(root->left);
-    printf("%d->",root->data);
-    inorder(root->right);
+
+// Function to create a new node
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->left = newNode->right = NULL;
+    return newNode;
 }
-void preorder(struct node* root)
-{
-    if(root==NULL)return;
-    printf("%d->",root->data);
-    preorder(root->left);
-    preorder(root->right);
-}
-void postorder(struct node* root)
-{
-    if(root==NULL)return;
-    postorder(root->left);
-    postorder(root->right);
-    printf("%d->",root->data);
-}
-struct node* create(int value)
-{
-    struct node* newnode=(struct node*)malloc(sizeof(struct node*));
-    newnode->data=value;
-    newnode->left=NULL;
-    newnode->right=NULL;
-    return newnode;
-}
-struct node* insert(struct node* root,int value)
-{
-    if(root==NULL)return create(value);
-    if(value<root->data)
-    {
-        root->left=insert(root->left,value);
+
+// Function to insert a new node into the BST
+struct Node* insert(struct Node* root, int data) {
+    if (root == NULL) {
+        return createNode(data);
     }
-    else if(value>root->data)
-    {
-        root->right=insert(root->right,value);
+    if (data < root->data) {
+        root->left = insert(root->left, data);
+    } else {
+        root->right = insert(root->right, data);
     }
     return root;
 }
-int main()
-{
-    struct node* root=NULL;
-    root=insert(root,50);
-    insert(root,30);
-    insert(root,20);
-    insert(root,40);
-    insert(root,70);
-    insert(root,60);
-    insert(root,80);
-    printf("inorder traversal:");
-    inorder(root);
-    printf("\npreorder traversal:");
-    preorder(root);
-    printf("\npostorder traversal:");
-    postorder(root);
+
+// Function to search for a value in the BST
+struct Node* search(struct Node* root, int data) {
+    if (root == NULL || root->data == data) {
+        return root;
+    }
+    if (data < root->data) {
+        return search(root->left, data);
+    }
+    return search(root->right, data);
 }
 
+// Function to perform in-order traversal of the BST
+void inorderTraversal(struct Node* root) {
+    if (root != NULL) {
+        inorderTraversal(root->left);
+        printf("%d ", root->data);
+        inorderTraversal(root->right);
+    }
+}
+
+int main() {
+    struct Node* root = NULL;
+    root = insert(root, 50);
+    insert(root, 30);
+    insert(root, 20);
+    insert(root, 40);
+    insert(root, 70);
+    insert(root, 60);
+    insert(root, 80);
+
+    printf("In-order traversal of the BST: ");
+    inorderTraversal(root);
+    
+    int searchValue = 40;
+    struct Node* foundNode = search(root, searchValue);
+    if (foundNode) {
+        printf("\nValue %d found in the BST.\n", searchValue);
+    } else {
+        printf("\nValue %d not found in the BST.\n", searchValue);
+    }
+    return 0;
+}
